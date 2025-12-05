@@ -110,15 +110,15 @@ class DatabaseService:
     
     #methods for data insertion
 
-    def insert_user(self, name: str, lang: str, chat_id: int) -> bool:
-        if self._insert('BotUsers', ('ChatID', 'TgName', 'Lang'), (chat_id, name, lang)):
+    def insert_user(self, name: str, lang: str, chat_id: int, referral: str) -> bool:
+        if self._insert('BotUsers', ('ChatID', 'TgName', 'Lang', 'ReferralAgent'), (chat_id, name, lang, referral)):
            logger.info(f"new user with chat id {chat_id} starts the bot")
            return True
         else:
            logger.warning(f"failed to create user account for {chat_id}")
            return False
-    def insert_agent(self, user_id: int, name: str, phone: str, bank: int) -> bool:
-        if self._insert('Agent', ('UserID', 'AgentName', 'PhoneNumber', 'BankAccount'), (user_id, name, phone, bank)):
+    def insert_agent(self, user_id: int, name: str, phone: str, bank: str, referral: str) -> bool:
+        if self._insert('Agent', ('UserID', 'AgentName', 'PhoneNumber', 'BankAccount', 'ReferralCode'), (user_id, name, phone, bank, referral)):
            logger.info(f"new agent with chat id {user_id} starts the bot")
            return True
         else:
@@ -149,11 +149,19 @@ class DatabaseService:
         return None
     def search_user(self, chat_id: int) -> tuple | None:
         return self._fetch_data('BotUsers', 'chatID', chat_id)
+    def search_user_by_id(self, user_id: int) -> tuple | None:
+        return self._fetch_data('BotUsers', 'UserID', user_id)
+    def search_app_id(self, id: int) -> tuple | None:
+        return self._fetch_data('Applications', 'ApplicationID', id)
+    def retun_users(self) -> tuple | None:
+        return self._select('BotUsers', '1 = 1')
     def search_agent(self, chat_id: int) -> tuple | None:
         user = self.search_user(chat_id)
         if user == None:
             return None
         return self._fetch_data('Agent', 'UserID', user[0])
+    def search_agent_by_ref(self, code: str) -> tuple | None:
+        return self._fetch_data('Agent', 'ReferralCode', code)
     def update_lang(self, chat_id: int, lang: str) -> None:
         try:
             self._update('BotUsers', f"Lang='{lang}'", f'ChatID={chat_id}')
@@ -166,6 +174,24 @@ class DatabaseService:
             logger.debug(f'role updated for {chat_id}')
         except Exception as e:
             logger.error(f'failed to update role for {chat_id}: {e}')
+    def update_ref_start(self, code: int) -> None:
+        try:
+            self._update('Agent', f"ReferralStart = ReferralStart + 1", f"ReferralCode='{code}'")
+            logger.debug(f'referral start updated for {code}')
+        except Exception as e:
+            logger.error(f'failed to update referral start for {code}: {e}')
+    def update_ref_apply(self, code: int) -> None:
+        try:
+            self._update('Agent', f"ReferralApply = ReferralApply + 1", f"ReferralCode='{code}'")
+            logger.debug(f'referral apply updated for {code}')
+        except Exception as e:
+            logger.error(f'failed to update referral apply for {code}: {e}')
+    def update_app_count(self, code: int) -> None:
+        try:
+            self._update('Agent', f"ApplicationCount = ApplicationCount + 1", f"ReferralCode='{code}'")
+            logger.debug(f'application count updated for {code}')
+        except Exception as e:
+            logger.error(f'failed to update application count for {code}: {e}')
     def update_payment(self, code: int, status: str) -> None:
         try:
             self._update('Applications', f"PaymentStatus='{status}'", f"PaymentPath LIKE '%{code}%'")
@@ -192,6 +218,7 @@ class DatabaseService:
             logger.error(f'failed to search app {code}: {e}')
     def submit_application(self,
                     user_id: int,
+                    referral: str,
                     full_name: str,
                     gender: str,
                     birth_date: str,
@@ -208,6 +235,7 @@ class DatabaseService:
         if self._insert('Applications',
                         (
                             'UserID',
+                            'AgentReferral',
                             'FullName',
                             'Gender',
                             'BirthDate',
@@ -222,6 +250,7 @@ class DatabaseService:
                             ),
                         (
                             user_id,
+                            referral,
                             full_name,
                             gender,
                             birth_date,

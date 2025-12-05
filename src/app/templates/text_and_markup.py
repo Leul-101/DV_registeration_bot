@@ -33,7 +33,27 @@ Until then, here’s what we provide:
 
 📢 Join our Telegram group to receive news and updates quickly:
 👉 https://t.me/dvlotteryethiopia2027""",
-        'help' : None,
+        'help' : """✨ DV Lottery Assistant Bot — Help Menu
+
+🤖 What This Bot Does
+• Helps you submit DV Lottery applications
+• Lets registered agents apply for clients
+• Sends confirmation numbers when applications are completed
+• Provides an admin panel for bot owners
+
+📌 Commands
+• /start — Begin using the bot
+• /apply — Start a new DV application
+• /agent — Register as an agent
+• /admin — Open the admin panel
+• /status — Check your application status
+• /help — Show this help menu
+
+📞 Support
+Need help? Contact our support team:
+• Telegram: @YourSupportUsername
+• Phone: +123 456 7890
+• Email: example@mail.com""",
         'questions' : ["Please enter your FULL LEGAL NAME exactly as it appears on your passport.",
                       "Please select your gender.",
                       "Please enter your date of birth (DD-MM-YYYY).",
@@ -89,7 +109,28 @@ Thank you for choosing us! 🙏""",
 👉 https://t.me/dvlotteryethiopia2027
 
 🙏 እናመሰግናለን""",
-        'help' : None,
+        'help' : """✨ DV Lottery አገልጋይ ቦት — የእርዳታ ሜኑ
+
+🤖 ቦቱ የሚያደርገው
+• የDV ሎተሪ መስጫ ሂደትን ይረዳዎታል
+• የተመዘገቡ ወኪሎች ለደንበኞቻቸው ማመልከት ይችላሉ
+• መመርያዎች ከተጠናቀቁ በኋላ የማረጋገጫ ቁጥሮችን ይልካል
+• ለቦት ባለቤቶች የአስተዳደር ፓነል ይሰጣል
+
+📌 ትእዛዞች
+• /start — ቦቱን ጀምር
+• /apply — አዲስ የDV መዝገብ ጀምር
+• /agent — እንደ ወኪል ተመዝገብ
+• /admin — የአስተዳደር ፓነል ክፈት
+• /status — የመመርያ ሁኔታህን ተመልከት
+• /help — ይህን የእርዳታ ሜኑ አሳይ
+
+📞 ድጋፍ
+እገዛ ይፈልጋሉ? የድጋፍ ቡድናችንን ያነጋግሩ፦
+• ቴለግራም፦ @YourSupportUsername
+• ስልክ፦ +123 456 7890
+• ኢሜይል፦ example@mail.com
+""",
     },
     #######affan_oromo########
     'oro' : {
@@ -108,7 +149,27 @@ Yeroo eeggannoo kana keessatti tajaajiloota armaan gadii ni kenna:
 
 📢 Oduu fi odeeffannoo haaraa saffisaan akka siif gahu, garee Telegram keenyaa seeni:
 👉 https://t.me/dvlotteryethiopia2027""",
-        'help' : None,
+        'help' : """✨ DV Lottery Gargaarsa Botii — Galmee Gargaarsaa
+
+🤖 Botichi Wanta Dalagu
+• Deeggarsa galmee DV Lottery siif kenna
+• Ejansoonni galmaa’an maamiltootaaf ni dhiyeessu
+• Galmeen fixxiin booda lakkoofsa mirkaneessaa ni erga
+• Abbootii botii fi hoggantootaaf paanelii admin ni qaba
+
+📌 Ajajawwan
+• /start — Botii eegali
+• /apply — Galmee DV haaraa jalqabi
+• /agent — Akkuma ejansaatti of galmeessi
+• /admin — Paanelii admin banu
+• /status — Haala galmee kee ilaali
+• /help — Galmee gargaarsaa kana agarsiisi
+
+📞 Deeggarsa
+Deeggarsa barbaaddaa? Garee deeggarsa keenya qunnamaa:
+• Telegram: @YourSupportUsername
+• Bilbila: +123 456 7890
+• Email: example@mail.com""",
     }
 }
 
@@ -129,21 +190,6 @@ Here’s how it works:
 This is *not* an official U.S. Government bot. I only help you prepare and submit your application correctly.
 
 Ready to begin? Tap below 👇
-"""
-help = """🆘 Help — DV Lottery Assistant Bot
-
-This bot helps you submit your information for the U.S. DV Lottery.  
-Here’s what you can do:
-
-📋 /apply — Start or continue your application  
-💰 /payment — View payment options  
-📄 /status — Check your application status  
-📞 /contact — Get in touch with the agent  
-
-💡 Tip:
-Make sure your photo meets DV Lottery standards — clear background, no shadows, and recent.
-
-Need help? Contact @YourSupportUsername
 """
 cancel = """❌ Action cancelled.
 

@@ -200,6 +200,7 @@ async def get_payment(update: Update, context: ContextTypes.DEFAULT_TYPE):
                          DataBase.start()
                          bot_user = DataBase.search_user(update.message.chat_id)
                          DataBase.submit_application(bot_user[0],
+                                                     bot_user[5],
                                                      context.user_data['full_name'],
                                                      context.user_data['gender'],
                                                      context.user_data['birth_date'],
@@ -291,7 +292,10 @@ async def admin_service(update: Update, context: ContextTypes.DEFAULT_TYPE):
                logger.error(e)
      elif update.message.text == "📊Statistics Dashboard":
           try:
-               await update.message.reply_text("Comming soon...😁I'm working on it",
+               DataBase.start()
+               users = DataBase.retun_users()
+               DataBase.end()
+               await update.message.reply_text(f"number of user: {len(users)}",
                                                reply_markup=ReplyKeyboardRemove())
                return ConversationHandler.END
           except Exception as e:
@@ -310,11 +314,26 @@ async def agent_entery(update: Update, context: ContextTypes.DEFAULT_TYPE):
      data = DataBase.search_user(update.message.chat_id)
      context.user_data['lang'] = data[3]
      context.user_data['user_id'] = data[0]
+     agent_data = DataBase.search_agent(update.message.chat_id)
      DataBase.end()
      for i in range(3):
           try:
                if data[4] == 'Agent':
-                    await update.message.reply_text(tandm.agent[context.user_data['lang']]['form'][4])
+                    text = f"""📊 Agent Panel
+
+👥 Referrals Started: {agent_data[6]}
+🎯 Referrals Applied: {agent_data[7]}
+💼 Total Clients You Applied For: {agent_data[8]}
+
+📎 Your Referral Link:
+https://t.me/{context.bot.username}?start={agent_data[5]}
+
+⚙️ Tools
+• 👉 Use /apply to submit an application for a client
+• 📥 Share your link to get more clients
+• 📌 Use /agent anytime to refresh this panel"""
+                    #await update.message.reply_text(tandm.agent[context.user_data['lang']]['form'][4])
+                    await update.message.reply_text(text)
                     return ConversationHandler.END
                await update.message.reply_text(tandm.agent[context.user_data['lang']]['form'][0])
                return AGENT_FORM[0]
@@ -324,6 +343,7 @@ async def agent_entery(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return ConversationHandler.END
                else:
                     logger.warning(f"agent Conversation entery failing: {e}")
+          asyncio.sleep(3)
 async def get_agent_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
      context.user_data['agent_name'] = update.message.text
      for i in range(3):
@@ -352,16 +372,31 @@ async def get_agent_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
           await asyncio.sleep()
 async def get_agent_bank(update: Update, context: ContextTypes.DEFAULT_TYPE):
      context.user_data['agent_bank'] = update.message.text
+     code = f"{str(uuid.uuid4()).split('-')[1]}_{update.message.chat_id}" 
      DataBase.start()
      DataBase.update_role(update.message.chat_id, 'Agent')
      DataBase.insert_agent(context.user_data['user_id'],
                            context.user_data['agent_name'],
                            context.user_data['agent_phone'],
-                           context.user_data['agent_bank'])
+                           context.user_data['agent_bank'],
+                           code)
      DataBase.end()
+     text = f"""📊 Agent Panel
+
+👥 Referrals Started: 0
+🎯 Referrals Applied: 0
+💼 Total Clients You Applied For: 0
+
+📎 Your Referral Link:
+https://t.me/{context.bot.username}?start={code}
+
+⚙️ Tools
+• 👉 Use /apply to submit an application for a client
+• 📥 Share your link to get more clients
+• 📌 Use /agent anytime to refresh this panel"""
      for i in range(3):
           try:
-               await update.message.reply_text(tandm.agent[context.user_data['lang']]['form'][3])
+               await update.message.reply_text(text)
                return ConversationHandler.END
           except Exception as e:
                if i == 2:
