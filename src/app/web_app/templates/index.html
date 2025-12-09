@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title> US DV Lottery — Registration Form</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"
+type="text/css">
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+  <div class="card" role="main">
+    <div class="top-row">
+      <label for="lang" style="display:flex;align-items:center;gap:8px;font-weight:600;color:var(--text);margin:0 6px 10px 0">
+        <span style="font-size:13px;color:var(--muted)">Language</span>
+      </label>
+      <select id="lang" class="lang-select" aria-label="Select language">
+        <option value="en">English</option>
+        <option value="am">አማርኛ</option>
+        <option value="om">Afaan Oromoo</option>
+      </select> 
+    </div>
+
+    <h1 class="title" data-key="formTitle">DV Lottery Ethiopia Registration Form</h1>
+    <div class="subtitle" data-key="subtitle">#</div>
+
+    <form id="dvForm" method="POST" enctype="multipart/form-data" action="" novalidate>
+      {{ form.hidden_tag() }}
+
+      <!-- A. Personal Info -->
+      <div class="section">
+        <div class="section-title" data-key="personalSection">A. Personal Information</div>
+
+        <label data-key="labelFullName">Full Legal Name (exactly as it appears on your passport or national ID)</label>
+        {{ form.fullName(id="fullName", placeholder="e.g. John Abraham", class="is-invalid" if form.fullName.errors) }}
+        {% if form.fullName.errors %}
+          <ul class="error-message">{% for error in form.fullName.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelGender">Gender</label>
+        {{ form.gender(id="gender", class="is-invalid" if form.gender.errors) }}
+        {% if form.gender.errors %}
+          <ul class="error-message">{% for error in form.gender.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelDOB">Date of Birth (Gregorian calendar)</label>
+        <div class="dob-row" aria-label="Date of birth">
+          {{ form.day(id="day", class="is-invalid" if form.day.errors) }}
+          {{ form.month(id="month", class="is-invalid" if form.month.errors) }}
+          {{ form.year(id="year", class="is-invalid" if form.year.errors) }}
+        </div>
+        {% if form.day.errors or form.month.errors or form.year.errors %}
+          <ul class="error-message">
+            {% for error in form.day.errors %}<li>Day: {{ error }}</li>{% endfor %}
+            {% for error in form.month.errors %}<li>Month: {{ error }}</li>{% endfor %}
+            {% for error in form.year.errors %}<li>Year: {{ error }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+
+        <label data-key="labelBirthCity">City or town of birth</label>
+        {{ form.birthCity(id="birthCity", class="is-invalid" if form.birthCity.errors) }}
+        {% if form.birthCity.errors %}
+          <ul class="error-message">{% for error in form.birthCity.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelBirthCountry">Country of birth</label>
+        {{ form.birthCountry(id="birthCountry", class="is-invalid" if form.birthCountry.errors) }}
+        {% if form.birthCountry.errors %}
+          <ul class="error-message">{% for error in form.birthCountry.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelPhoto">Upload a recent passport-style photo</label>
+        <ul class="requirements">
+          <li data-key="req1">Plain light background (white or cream)</li>
+          <li data-key="req2">No glasses, hats, or shadows</li>
+          <li data-key="req3">Face centered and clearly visible</li>
+          <li data-key="req4">Taken within last 6 months</li>
+          <li data-key="req5">JPEG, max size 240 KB, recommended 600×600 px</li>
+        </ul>
+
+        {{ form.photo(id="photo", accept="image/jpeg", class="is-invalid" if form.photo.errors) }}
+        {% if form.photo.errors %}
+          <ul class="error-message">{% for error in form.photo.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+        <div id="photoPreview" class="preview-row" aria-hidden="true"></div>
+      </div>
+
+      <!-- B. Contact -->
+      <div class="section">
+        <div class="section-title" data-key="contactSection">B. Contact Information</div>
+
+        <label data-key="labelRegion">Mailing address: Region</label>
+        {{ form.region(id="region", class="is-invalid" if form.region.errors) }}
+        {% if form.region.errors %}
+          <ul class="error-message">{% for error in form.region.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelCity">City</label>
+        {{ form.city(id="city", class="is-invalid" if form.city.errors) }}
+        {% if form.city.errors %}
+          <ul class="error-message">{% for error in form.city.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelDistrict">District (sub-city)</label>
+        {{ form.district(id="district", class="is-invalid" if form.district.errors) }}
+        {% if form.district.errors %}
+          <ul class="error-message">{% for error in form.district.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelPhone">Active phone number</label>
+        {{ form.phone(id="phone", placeholder="+251...", class="is-invalid" if form.phone.errors) }}
+        {% if form.phone.errors %}
+          <ul class="error-message">{% for error in form.phone.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <label data-key="labelEmail">Email address</label>
+        {{ form.email(id="email", placeholder="you@example.com", class="is-invalid" if form.email.errors) }}
+        {% if form.email.errors %}
+          <ul class="error-message">{% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+      </div>
+
+      <!-- C. Education -->
+      <div class="section">
+        <div class="section-title" data-key="educationSection">C. Education</div>
+
+        <label data-key="labelEducation">What is your highest level of education?</label>
+        {{ form.education(id="education", class="is-invalid" if form.education.errors) }}
+        {% if form.education.errors %}
+          <ul class="error-message">{% for error in form.education.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+      </div>
+
+      <!-- D. Marital Status -->
+      <div class="section">
+        <div class="section-title" data-key="maritalSection">D. Marital Status</div>
+
+        <label data-key="labelMarital">Select marital status</label>
+        {{ form.marital(id="marital", class="is-invalid" if form.marital.errors) }}
+        {% if form.marital.errors %}
+          <ul class="error-message">{% for error in form.marital.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <!-- spouse block -->
+        <div id="spouseBlock" class="block hidden" aria-hidden="true">
+          <h4 data-key="spouseTitle">For Married Applicants — Spouse Information</h4>
+
+          <label data-key="labelSpouseName">Spouse's full name</label>
+          {{ form.spouseName(id="spouseName", class="is-invalid" if form.spouseName.errors) }}
+          {% if form.spouseName.errors %}
+            <ul class="error-message">{% for error in form.spouseName.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+          {% endif %}
+
+          <label data-key="labelSpouseDOB">Spouse's date of birth</label>
+          <div class="dob-row">
+            {{ form.spouseDay(id="spouseDay", class="is-invalid" if form.spouseDay.errors) }}
+            {{ form.spouseMonth(id="spouseMonth", class="is-invalid" if form.spouseMonth.errors) }}
+            {{ form.spouseYear(id="spouseYear", class="is-invalid" if form.spouseYear.errors) }}
+          </div>
+          {% if form.spouseDay.errors or form.spouseMonth.errors or form.spouseYear.errors %}
+            <ul class="error-message">
+                {% for error in form.spouseDay.errors %}<li>Day: {{ error }}</li>{% endfor %}
+                {% for error in form.spouseMonth.errors %}<li>Month: {{ error }}</li>{% endfor %}
+                {% for error in form.spouseYear.errors %}<li>Year: {{ error }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+
+          <label data-key="labelSpouseCity">Spouse birth city / town</label>
+          {{ form.spouseCity(id="spouseCity", class="is-invalid" if form.spouseCity.errors) }}
+          {% if form.spouseCity.errors %}
+            <ul class="error-message">{% for error in form.spouseCity.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+          {% endif %}
+
+          <label data-key="labelSpouseCountry">Spouse birth country</label>
+          {{ form.spouseCountry(id="spouseCountry", class="is-invalid" if form.spouseCountry.errors) }}
+          {% if form.spouseCountry.errors %}
+            <ul class="error-message">{% for error in form.spouseCountry.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+          {% endif %}
+
+          <label data-key="labelSpousePhoto">Upload spouse passport-style photo</label>
+          {{ form.spousePhoto(id="spousePhoto", accept="image/jpeg", class="is-invalid" if form.spousePhoto.errors) }}
+          {% if form.spousePhoto.errors %}
+            <ul class="error-message">{% for error in form.spousePhoto.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+          {% endif %}
+
+          <div id="spousePreview" class="preview-row" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <!-- Children -->
+      <div class="section">
+        <div class="section-title" data-key="childrenSection">E. Children (under 21)</div>
+
+        <label data-key="labelHasChildren">Do you have children under 21?</label>
+        {{ form.hasChildren(id="hasChildren", class="is-invalid" if form.hasChildren.errors) }}
+        {% if form.hasChildren.errors %}
+          <ul class="error-message">{% for error in form.hasChildren.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <div id="childrenCountWrapper" class="hidden">
+          <label data-key="labelChildrenCount">If yes, how many?</label>
+          {{ form.childrenCount(id="childrenCount", class="is-invalid" if form.childrenCount.errors) }}
+          {% if form.childrenCount.errors %}
+            <ul class="error-message">{% for error in form.childrenCount.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+          {% endif %}
+        </div>
+
+        <div id="childrenContainer" aria-live="polite"></div>
+        <!-- Note: Errors for dynamic children fields are harder to display here without more complex JS -->
+      </div>
+
+      <!-- Payment -->
+      <div class="section">
+        <div class="section-title" data-key="paymentSection">F. Payment Verification</div>
+
+        <p class="hint" data-key="paymentHint">
+          Please upload your payment receipt screenshot and ensure it clearly shows:
+        </p>
+
+        <ul class="requirements">
+          <li data-key="pay1">Full name of the sender</li>
+          <li data-key="pay2">Transaction amount</li>
+          <li data-key="pay3">Transaction reference code</li>
+          <li data-key="pay4">Date & time of payment</li>
+        </ul>
+
+        {{ form.payment(id="payment", accept="image/*", class="is-invalid" if form.payment.errors) }}
+        {% if form.payment.errors %}
+          <ul class="error-message">{% for error in form.payment.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+        <div id="paymentPreview" class="preview-row" aria-hidden="true"></div>
+      </div>
+
+      <button class="submit" id="submitBtn" type="submit" data-key="submitText">
+        Submit Application
+      </button>
+    </form>
+
+  </div>
+</body>
+</html>

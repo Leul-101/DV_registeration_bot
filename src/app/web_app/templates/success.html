@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Successful</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .success-card {
+            text-align: center;
+            padding: 50px 40px;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        .success-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+        .success-message {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .back-button:hover {
+            transform: translateY(-2px);
+            background: #5874ec;
+        }
+    </style>
+</head>
+<body>
+    <div class="card success-card">
+        <svg class="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #22c55e;">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <h1 class="success-title">Submission Successful!</h1>
+        <p class="success-message">Your application has been received. We will review your information and get back to you shortly.</p>
+        <a href="{{ url_for('apply') }}" class="back-button">Submit Another Application</a>
+    </div>
+</body>
+</html>
