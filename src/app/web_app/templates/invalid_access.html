@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .container {
+            text-align: center;
+            padding: 50px 40px;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            color: #ef4444; /* Red for alert/denied */
+        }
+        .message-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+        .message-text {
+            color: #6b7280;
+            margin-bottom: 30px;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .action-link {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .action-link:hover {
+            transform: translateY(-2px);
+            background: #5874ec;
+        }
+    </style>
+</head>
+<body>
+    <div class="card container">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+        <h1 class="message-title">Invalid Access</h1>
+        <p class="message-text">It seems you've landed here directly. To fill out the application, please start the process again through our bot.</p>
+        <!-- Optional: Add a link back to the bot if you have one -->
+        <!-- <a href="YOUR_BOT_LINK_HERE" class="action-link">Go to Bot</a> -->
+    </div>
+</body>
+</html>

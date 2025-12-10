@@ -37,6 +37,9 @@ class ChildForm(FlaskForm):
 # --------------------------
 class DVForm(FlaskForm):
 
+    # ADDED: Hidden field to carry the chat_id from the URL to the POST request
+    chat_id = StringField('Chat ID', validators=[DataRequired()])
+
     # A. Personal Information
     fullName = StringField("Full Name", validators=[DataRequired()])
     gender = SelectField(

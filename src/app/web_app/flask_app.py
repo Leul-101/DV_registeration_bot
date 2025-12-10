@@ -2,7 +2,7 @@ import os
 import json
 import uuid
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from .form import DVForm
 from app.utils import config
@@ -50,13 +50,42 @@ def save_file(file_storage, upload_folder):
 @app.route('/apply', methods=['GET', 'POST'])
 def apply():
     form = DVForm()
+    if request.method == 'GET':
+        chat_id_from_url = request.args.get('chat_id')
+        
+        if chat_id_from_url:
+            # Case 1: Initial visit with chat_id in URL. Store it and redirect.
+            session['chat_id'] = chat_id_from_url
+            # REDIRECT to the clean URL /apply without the parameter (hides it from the user)
+            return redirect(url_for('apply')) 
+        
+        chat_id_from_session = session.get('chat_id')
+        if not chat_id_from_session:
+            # Case 2: No chat_id in URL AND no chat_id in session. Unauthorized access.
+            return render_template('invalid_access.html'), 403
+        
+        # Case 3: Redirected visit or returning user with chat_id in session.
+        # Pass the chat_id from the session to the form object for rendering the hidden field.
+        form.chat_id.data = chat_id_from_session
+        return render_template('index.html', title='Registry', form=form)
     try:
         if form.validate_on_submit():
             logger.info("Form validation successful. Starting data collection.")
             
+            # Retrieve the chat_id from the submitted form data (hidden field)
+            chat_id = form.chat_id.data
+            
+            # Clear chat_id from session after successful submission to prevent accidental re-use
+            session.pop('chat_id', None)
+            
             # --- Data Collection ---
-            data_to_save = {}
+            # ADDED: Start data with chat_id
+            data_to_save = {'chat_id': chat_id}
+            
             for field in form:
+                # SKIP: chat_id is already handled above
+                if field.name == 'chat_id': continue
+
                 if field.type not in ['CSRFTokenField', 'FieldList', 'FormField']:
                     if field.type == 'FileField':
                         upload_folder = PAYMENT_STORAGE_PATH if 'payment' in field.name else PHOTO_STORAGE_PATH
