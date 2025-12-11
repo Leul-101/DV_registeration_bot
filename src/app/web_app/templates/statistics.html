@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Statistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='statistics.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h2>Total Users</h2>
+                <p>{{ stats.total_users }}</p>
+            </div>
+            <div class="stat-card">
+                <h2>Total Applications</h2>
+                <p>{{ stats.total_applications }}</p>
+            </div>
+            <div class="stat-card">
+                <h2>User Roles</h2>
+                <div id="user-roles">
+                    {% for role, count in stats.user_roles.items() %}
+                    <span>{{ role }}: {{ count }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="stat-card">
+                <h2>Payment Status</h2>
+                 <div id="payment-status">
+                    {% for status, count in stats.payment_status.items() %}
+                    <span>{{ status }}: {{ count }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="applications-chart"></canvas>
+        </div>
+    </div>
+    <script>
+        const applicationsData = JSON.parse('{{ stats.applications_over_time | tojson | safe }}');
+    </script>
+    <script src="{{ url_for('static', filename='statistics.js') }}"></script>
+</body>
+</html>

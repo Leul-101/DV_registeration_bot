@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Verification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='payments.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Pending Payments</h1>
+        <p>Review and process pending payments for family applications.</p>
+
+        <div id="payments-grid" class="payments-grid">
+            {% if payments %}
+                {% for payment in payments %}
+                <div class="payment-card" id="payment-card-{{ payment[0] }}">
+                    <div class="card-header">
+                        <h3 class="applicant-name">{{ payment[1] }}</h3>
+                        <span class="application-id">ID: {{ payment[0] }}</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="submission-date">Submitted: {{ payment[2].strftime('%Y-%m-%d %H:%M') }}</p>
+                        <div class="payment-image">
+                            {% if payment[3] %}
+                            <img src="{{ url_for('payment_image', filename=payment[3] ) }}" alt="Payment Proof" data-full-src="{{ url_for('payment_image', filename=payment[3] ) }}">
+                            {% else %}
+                            <p class="no-image">No image uploaded</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-approve" data-id="{{ payment[0] }}">Approve</button>
+                        <button class="btn btn-reject" data-id="{{ payment[0] }}">Reject</button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h2>All caught up!</h2>
+                    <p>There are no pending payments to review.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modal-image">
+        <div id="caption"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='payments.js') }}"></script>
+</body>
+</html>

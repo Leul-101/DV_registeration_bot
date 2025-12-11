@@ -65,6 +65,26 @@ class DatabaseService:
             logger.warning(f"there is no connection with the database")
         return False
 
+    def _execute_select(self, sql_code: str) -> list | None:
+        """
+        Executes a given SQL SELECT command and returns the results.
+
+        Args:
+            sql_code (str): The SQL query to execute.
+
+        Returns:
+            list | None: A list of tuples representing the rows returned by the query, or None if an error occurs.
+        """
+        if self.conn:
+            try:
+                self.cursor.execute(sql_code)
+                return self.cursor.fetchall()
+            except Exception as e:
+                logger.error(f"data selection failed: {e}")
+        else:
+            logger.warning(f"there is no connection with the database")
+        return None
+
     def _insert(self, table: str, columns_list: tuple, values_list: tuple) -> bool:
         """
         this method will handle the insertion opration
@@ -296,3 +316,35 @@ class DatabaseService:
         except Exception as e:
             logger.error(f"failed to create family application for {user_data[0]}: {e}")
             return False
+    def get_total_users(self):
+        sql = "SELECT COUNT(*) FROM BotUsers"
+        result = self._execute_select(sql)
+        return result[0][0] if result else 0
+
+    def get_total_applications(self):
+        sql = "SELECT COUNT(*) FROM Applications"
+        result = self._execute_select(sql)
+        return result[0][0] if result else 0
+
+    def get_applications_over_time(self):
+        sql = "SELECT DATE(CreationDate), COUNT(*) FROM Applications GROUP BY DATE(CreationDate) ORDER BY DATE(CreationDate) ASC"
+        return self._execute_select(sql)
+
+    def get_payment_status_distribution(self):
+        sql = "SELECT PaymentStatus, COUNT(*) FROM Applications GROUP BY PaymentStatus"
+        return self._execute_select(sql)
+
+    def get_user_role_distribution(self):
+        sql = "SELECT UserRole, COUNT(*) FROM BotUsers GROUP BY UserRole"
+        return self._execute_select(sql)
+
+    def get_language_distribution(self):
+        sql = "SELECT Lang, COUNT(*) FROM BotUsers GROUP BY Lang"
+        return self._execute_select(sql)
+
+    def get_pending_family_applications(self):
+        sql = "SELECT ApplicationID, FullName, CreationDate, PaymentPath FROM FamilyApplications WHERE PaymentStatus = 'Pending' ORDER BY CreationDate ASC"
+        return self._execute_select(sql)
+
+    def update_family_payment_status(self, application_id: int, status: str) -> bool:
+        return self._update('FamilyApplications', f"PaymentStatus='{status}'", f"ApplicationID={application_id}")

@@ -2,7 +2,7 @@ import os
 import json
 import uuid
 from datetime import datetime
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from .form import DVForm
 from app.utils import config
@@ -150,6 +150,99 @@ def apply():
         return render_template('500.html', error=e), 500
 
     return render_template('index.html', title='Registry', form=form)
+
+@app.route('/statistics')
+def statistics():
+    chat_id = request.args.get('chat_id')
+    if not chat_id:
+        return render_template('invalid_access.html'), 403
+
+    db = db_helper.DatabaseService()
+    db.start()
+
+    user = db.search_user(chat_id)
+    # Assuming UserRole is at index 4
+    if not user or user[4] != 'Admin':
+        db.end()
+        return render_template('invalid_access.html'), 403
+
+    total_users = db.get_total_users()
+    total_applications = db.get_total_applications()
+    
+    applications_over_time_raw = db.get_applications_over_time()
+    applications_over_time = [(d.strftime('%Y-%m-%d'), count) for d, count in applications_over_time_raw or []]
+
+    payment_status_raw = db.get_payment_status_distribution()
+    payment_status = {status: count for status, count in payment_status_raw or []}
+
+    user_roles_raw = db.get_user_role_distribution()
+    user_roles = {role: count for role, count in user_roles_raw or []}
+
+    db.end()
+
+    stats_data = {
+        'total_users': total_users,
+        'total_applications': total_applications,
+        'applications_over_time': applications_over_time,
+        'payment_status': payment_status,
+        'user_roles': user_roles,
+    }
+
+    return render_template('statistics.html', stats=stats_data)
+
+@app.route('/payment_images/<path:filename>')
+def payment_image(filename):
+    return send_from_directory(PAYMENT_STORAGE_PATH, filename)
+
+@app.route('/payments')
+def payments():
+    chat_id = request.args.get('chat_id')
+    if not chat_id:
+        return render_template('invalid_access.html'), 403
+
+    db = db_helper.DatabaseService()
+    db.start()
+
+    user = db.search_user(chat_id)
+    if not user or user[4] != 'Admin':
+        db.end()
+        return render_template('invalid_access.html'), 403
+
+    pending_payments_raw = db.get_pending_family_applications()
+    
+    pending_payments = []
+    if pending_payments_raw:
+        for p in pending_payments_raw:
+            payment_list = list(p)
+            if payment_list[3]: # If PaymentPath is not None
+                payment_list[3] = os.path.basename(payment_list[3])
+            pending_payments.append(payment_list)
+
+    db.end()
+
+    return render_template('payments.html', payments=pending_payments)
+
+@app.route('/update_family_payment', methods=['POST'])
+def update_family_payment():
+    data = request.get_json()
+    application_id = data.get('application_id')
+    status = data.get('status')
+
+    if not all([application_id, status]):
+        return jsonify({'success': False, 'error': 'Missing data'}), 400
+    
+    if status not in ['Paid', 'Rejected']:
+        return jsonify({'success': False, 'error': 'Invalid status'}), 400
+
+    db = db_helper.DatabaseService()
+    db.start()
+    success = db.update_family_payment_status(application_id, status)
+    db.end()
+
+    if success:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Database update failed'}), 500
 
 def flask_run():
     logger.info('flask app starts running')
