@@ -216,55 +216,83 @@ class DatabaseService:
                 return None
         except Exception as e:
             logger.error(f'failed to search app {code}: {e}')
-    def submit_application(self,
-                    user_id: int,
-                    referral: str,
-                    full_name: str,
-                    gender: str,
-                    birth_date: str,
-                    birth_city: str,
-                    current_city: str,
-                    phone: str,
-                    email: str,
-                    education: str,
-                    marital_status: str,
-                    photo_path: str,
-                    payment_path: str
+    def search_family_appliction(self, payment_code: str) -> None | tuple:
+        try:
+            result = self._select('FamilyApplications',
+                                  f"PaymentPath LIKE '%{payment_code}%'")
+            if result != None:
+                logger.debug(result)
+                logger.debug(f'app search found for {payment_code}')
+                return result[0]
+            else:
+                logger.debug(f'app search not found for {payment_code}')
+                return None
+        except Exception as e:
+            logger.error(f'failed to search app {payment_code}: {e}')
+    def submit_application(self, user_id: int, referral: str, full_name: str,
+                        gender: str, birth_date: str, birth_city: str, current_city: str,
+                        phone: str, email: str, education: str, marital_status: str,
+                        photo_path: str, payment_path: str
                     ) -> bool:
 
         if self._insert('Applications',
-                        (
-                            'UserID',
-                            'AgentReferral',
-                            'FullName',
-                            'Gender',
-                            'BirthDate',
-                            'BirthCity',
-                            'CurrentCity',
-                            'PhoneNumber',
-                            'Email',
-                            'Education',
-                            'MaritalStatus',
-                            'PhotoPath',
-                            'PaymentPath',
+                        ('UserID', 'AgentReferral', 'FullName', 'Gender', 'BirthDate',
+                         'BirthCity', 'CurrentCity', 'PhoneNumber', 'Email',
+                         'Education', 'MaritalStatus', 'PhotoPath', 'PaymentPath',
                             ),
                         (
-                            user_id,
-                            referral,
-                            full_name,
-                            gender,
-                            birth_date,
-                            birth_city,
-                            current_city,
-                            phone,
-                            email,
-                            education,
-                            marital_status,
-                            photo_path,
-                            payment_path
+                            user_id, referral, full_name, gender, birth_date,
+                            birth_city, current_city,phone, email, education,
+                            marital_status, photo_path, payment_path
                             )):
            logger.info(f"new application created by {user_id}")
            return True
         else:
            logger.warning(f"failed to create application for {user_id}")
            return False
+    def submit_family_application(self, app_data: dict) -> bool:
+        try:
+            user_data = self.search_user(app_data['chat_id'])
+
+            self._insert('FamilyApplications',
+                         ('UserID', 'AgentReferral', 'FullName', 'Gender', 'BirthDate',
+                          'BirthCity', 'CurrentCity', 'PhoneNumber', 'Email',
+                          'Education', 'MaritalStatus', 'ChildrenCount','PhotoPath', 'PaymentPath'
+                             ),
+                         (
+                             user_data[0], user_data[5], app_data['fullName'], app_data['gender'],
+                             f"{app_data['day']}-{app_data['month']}-{app_data['year']}", app_data['birthCity'],
+                             app_data['city'], app_data['phone'], app_data['email'], app_data['education'],
+                             app_data['marital'], len(app_data['children']), app_data['photo'], app_data['payment']
+                             ))
+            spouse_gender = None
+            if app_data['gender'] == 'male':
+                spouse_gender = 'female'
+            else:
+                spouse_gender = 'male'
+            
+            app_id = self.search_family_appliction(app_data['payment'].split('\\')[-1].split('.')[0])[0]
+
+            if app_data['marital'] == 'married':
+                self._insert('Spouse',
+                             ('ApplicationID', 'SpouseName', 'Gender', 'BirthDate',
+                              'City', 'Country', 'PhotoPath'),
+                              (app_id, app_data['spouseName'], spouse_gender,
+                               f"{app_data['spouseDay']}-{app_data['spouseMonth']}-{app_data['spouseYear']}",
+                                app_data['spouseCity'], app_data['spouseCountry'], app_data['spousePhoto']
+                               ))
+            
+            for i in range(len(app_data['children'])):
+                self._insert('Children',
+                         ('ApplicationID', 'ChildrenName', 'Gender', 'BirthDate',
+                          'City', 'Country', 'PhotoPath'),
+                          (app_id, app_data['children'][i]['name'], app_data['children'][i]['gender'],
+                           f"{app_data['children'][i]['day']}-{app_data['children'][i]['month']}-{app_data['children'][i]['year']}",
+                            app_data['children'][i]['city'], app_data['children'][i]['country'], app_data['children'][i]['photo_path']
+                           ))
+
+            logger.info(f"new family application created by {user_data[0]}")
+            return True
+        except Exception as e:
+            logger.error(f"failed to create family application for {user_data[0]}: {e}")
+            return False

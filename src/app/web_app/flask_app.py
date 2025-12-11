@@ -54,9 +54,15 @@ def apply():
         chat_id_from_url = request.args.get('chat_id')
         
         if chat_id_from_url:
+            DataBase.start()
+            if DataBase.search_user(chat_id_from_url) == None:
+                DataBase.end()
+                return render_template('invalid_access.html'), 403
+            
             # Case 1: Initial visit with chat_id in URL. Store it and redirect.
             session['chat_id'] = chat_id_from_url
             # REDIRECT to the clean URL /apply without the parameter (hides it from the user)
+            
             return redirect(url_for('apply')) 
         
         chat_id_from_session = session.get('chat_id')
@@ -113,15 +119,19 @@ def apply():
             data_to_save['children'] = children_data
 
             # --- Save to JSON File ---
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            json_filename = f'application_{timestamp}.json'
-            json_filepath = os.path.join(os.path.dirname(__file__), json_filename)
+            # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            # json_filename = f'application_{timestamp}.json'
+            # json_filepath = os.path.join(os.path.dirname(__file__), json_filename)
             
-            logger.info(f"Saving collected data to JSON file: {json_filepath}")
-            with open(json_filepath, 'w') as f:
-                json.dump(data_to_save, f, indent=4, default=str) # Use default=str for non-serializable data
+            # logger.info(f"Saving collected data to JSON file: {json_filepath}")
+            # with open(json_filepath, 'w') as f:
+            #     json.dump(data_to_save, f, indent=4, default=str) # Use default=str for non-serializable data
 
-            logger.info(f"Successfully saved application data to {json_filepath}")
+            DataBase.start()
+            DataBase.submit_family_application(data_to_save)
+            DataBase.end()
+
+            logger.info("Successfully saved application data to database(maybe json)")
 
             return render_template('success.html')
     

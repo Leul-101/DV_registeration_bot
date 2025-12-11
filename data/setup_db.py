@@ -17,7 +17,7 @@ command_list = None
 
 database_path = os.path.dirname(os.path.abspath(__file__))
 
-with open(database_path + '\\schema.sql') as file:
+with open(os.path.join(database_path, 'schema.sql')) as file:
     command_list = file.read().split(';')
 
 
