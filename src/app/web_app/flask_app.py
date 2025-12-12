@@ -244,6 +244,80 @@ def update_family_payment():
     else:
         return jsonify({'success': False, 'error': 'Database update failed'}), 500
 
+
+@app.route('/registration')
+def registration():
+    chat_id = request.args.get('chat_id')
+    if not chat_id:
+        return render_template('invalid_access.html'), 403
+
+    db = db_helper.DatabaseService()
+    db.start()
+
+    user = db.search_user(chat_id)
+    if not user or user[4] != 'Admin':
+        db.end()
+        return render_template('invalid_access.html'), 403
+
+    applications = db.get_paid_and_unsubmitted_applications()
+    db.end()
+
+    return render_template('registration.html', applications=applications)
+
+
+@app.route('/user_images/<path:filename>')
+def user_image(filename):
+    return send_from_directory(PHOTO_STORAGE_PATH, filename)
+
+
+@app.route('/registration/view/<int:application_id>', methods=['GET'])
+def view_application(application_id):
+    db = db_helper.DatabaseService()
+    db.start()
+
+    application = db.get_family_application_details(application_id)
+    if not application:
+        db.end()
+        return "Application not found", 404
+
+    spouse = db.get_spouse_details(application_id)
+    children = db.get_children_details(application_id)
+    db.end()
+
+    # Split photo paths for easier access in the template
+    if application and application[13]:
+        app_list = list(application)
+        app_list[13] = os.path.basename(app_list[13])
+        application = tuple(app_list)
+
+    if spouse and spouse[7]:
+        spouse_list = list(spouse)
+        spouse_list[7] = os.path.basename(spouse_list[7])
+        spouse = tuple(spouse_list)
+
+    if children:
+        children_list = []
+        for child in children:
+            child_list = list(child)
+            if child_list[7]:
+                child_list[7] = os.path.basename(child_list[7])
+            children_list.append(tuple(child_list))
+        children = children_list
+
+
+    return render_template('view_application.html', application=application, spouse=spouse, children=children)
+
+
+@app.route('/registration/submit/<int:application_id>', methods=['POST'])
+def submit_application_status(application_id):
+    db = db_helper.DatabaseService()
+    db.start()
+    db.update_family_register_status(application_id, 'Submitted')
+    db.end()
+    chat_id = request.args.get('chat_id')
+    return redirect(url_for('registration', chat_id=chat_id))
+
+
 def flask_run():
     logger.info('flask app starts running')
     app.run(debug=True)

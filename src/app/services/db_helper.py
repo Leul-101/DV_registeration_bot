@@ -346,5 +346,21 @@ class DatabaseService:
         sql = "SELECT ApplicationID, FullName, CreationDate, PaymentPath FROM FamilyApplications WHERE PaymentStatus = 'Pending' ORDER BY CreationDate ASC"
         return self._execute_select(sql)
 
+    def get_paid_and_unsubmitted_applications(self):
+        sql = "SELECT ApplicationID, FullName, CreationDate FROM FamilyApplications WHERE PaymentStatus = 'Paid' AND RegisterStatus = 'Unsubmitted' ORDER BY CreationDate ASC"
+        return self._execute_select(sql)
+
     def update_family_payment_status(self, application_id: int, status: str) -> bool:
         return self._update('FamilyApplications', f"PaymentStatus='{status}'", f"ApplicationID={application_id}")
+
+    def get_family_application_details(self, application_id: int) -> tuple | None:
+        return self._fetch_data('FamilyApplications', 'ApplicationID', application_id)
+
+    def get_spouse_details(self, application_id: int) -> tuple | None:
+        return self._fetch_data('Spouse', 'ApplicationID', application_id)
+
+    def get_children_details(self, application_id: int) -> list | None:
+        return self._fetch_data('Children', 'ApplicationID', application_id, fetch='all')
+
+    def update_family_register_status(self, application_id: int, status: str) -> bool:
+        return self._update('FamilyApplications', f"RegisterStatus='{status}'", f"ApplicationID={application_id}")

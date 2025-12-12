@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='view_application.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Application Details for {{ application[3] }}</h1>
+        <div class="application-section">
+            <h2>Main Applicant</h2>
+            <div class="details-grid">
+                <div class="detail-item"><strong>Application ID:</strong> {{ application[0] }}</div>
+                <div class="detail-item"><strong>Full Name:</strong> {{ application[3] }}</div>
+                <div class="detail-item"><strong>Gender:</strong> {{ application[4] }}</div>
+                <div class="detail-item"><strong>Birth Date:</strong> {{ application[5] }}</div>
+                <div class="detail-item"><strong>Birth City:</strong> {{ application[6] }}</div>
+                <div class="detail-item"><strong>Current City:</strong> {{ application[7] }}</div>
+                <div class="detail-item"><strong>Phone Number:</strong> {{ application[8] }}</div>
+                <div class="detail-item"><strong>Email:</strong> {{ application[9] }}</div>
+                <div class="detail-item"><strong>Education:</strong> {{ application[10] }}</div>
+                <div class="detail-item"><strong>Marital Status:</strong> {{ application[11] }}</div>
+                <div class="detail-item"><strong>Children Count:</strong> {{ application[12] }}</div>
+            </div>
+            {% if application[13] %}
+            <div class="photo-container">
+                <img src="{{ url_for('user_image', filename=application[13]) }}" alt="Applicant Photo">
+            </div>
+            {% endif %}
+        </div>
+
+        {% if spouse %}
+        <div class="application-section">
+            <h2>Spouse Details</h2>
+            <div class="details-grid">
+                <div class="detail-item"><strong>Name:</strong> {{ spouse[2] }}</div>
+                <div class="detail-item"><strong>Gender:</strong> {{ spouse[3] }}</div>
+                <div class="detail-item"><strong>Birth Date:</strong> {{ spouse[4] }}</div>
+                <div class="detail-item"><strong>City:</strong> {{ spouse[5] }}</div>
+                <div class="detail-item"><strong>Country:</strong> {{ spouse[6] }}</div>
+            </div>
+            {% if spouse[7] %}
+            <div class="photo-container">
+                <img src="{{ url_for('user_image', filename=spouse[7]) }}" alt="Spouse Photo">
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if children %}
+        <div class="application-section">
+            <h2>Children Details</h2>
+            {% for child in children %}
+            <div class="child-details">
+                <div class="details-grid">
+                    <div class="detail-item"><strong>Name:</strong> {{ child[2] }}</div>
+                    <div class="detail-item"><strong>Gender:</strong> {{ child[3] }}</div>
+                    <div class="detail-item"><strong>Birth Date:</strong> {{ child[4] }}</div>
+                    <div class="detail-item"><strong>City:</strong> {{ child[5] }}</div>
+                    <div class="detail-item"><strong>Country:</strong> {{ child[6] }}</div>
+                </div>
+                {% if child[7] %}
+                <div class="photo-container">
+                    <img src="{{ url_for('user_image', filename=child[7]) }}" alt="Child Photo">
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form action="{{ url_for('submit_application_status', application_id=application[0], chat_id=request.args.get('chat_id')) }}" method="post" class="submit-form">
+            <button type="submit" class="btn btn-submit">Mark as Submitted</button>
+        </form>
+        
+    </div>
+</body>
+</html>
