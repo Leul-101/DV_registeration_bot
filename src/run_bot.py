@@ -3,11 +3,12 @@ from telegram.ext import (Application,
                           MessageHandler,
                           filters)
 from app.utils import config
-from app.web_app import flask_app
 from app.handlers import command_h, query_h, conversation_h
+import threading
 
 logger = config.setup_logger(__name__)
 TOKEN = config.BOT_TOKEN
+
 def main():
     app = Application.builder().token(TOKEN).build()
     app.add_handler(command_h.start_c)
@@ -22,5 +23,4 @@ def main():
     logger.info('Program stoped!')
 
 if __name__ == "__main__":
-    #main()
-    flask_app.flask_run()
+    main()

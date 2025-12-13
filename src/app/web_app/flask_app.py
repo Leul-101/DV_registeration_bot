@@ -313,7 +313,29 @@ def submit_application_status(application_id):
     db = db_helper.DatabaseService()
     db.start()
     db.update_family_register_status(application_id, 'Submitted')
+    
+    # Get user details from the application
+    application = db.get_family_application_details(application_id)
+    if application:
+        user_id = application[1]
+        user = db.search_user_by_id(user_id)
+        if user:
+            # UserRole is at index 4, ReferralAgent is at index 5
+            user_role = user[4]
+            referral_code = user[5]
+            
+            if user_role == 'Agent':
+                # It's an agent's own application
+                agent_profile = db.search_agent(user[1])
+                if agent_profile:
+                    db.update_app_count(agent_profile[5]) # agent_profile[5] is the ReferralCode
+            
+            elif user_role == 'Regular' and referral_code and referral_code != 'none':
+                # It's a referred user's application
+                db.update_ref_apply(referral_code)
+
     db.end()
+    
     chat_id = request.args.get('chat_id')
     return redirect(url_for('registration', chat_id=chat_id))
 
