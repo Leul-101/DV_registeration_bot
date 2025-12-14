@@ -21,15 +21,12 @@ messages = {
         'start' : """👋 Welcome to the DV Lottery Registration Bot!
 
 ⚠️ The U.S. DV Lottery is not open yet.
-Until then, here’s what we provide:
+Until then, here are the things you can do:
 
-✅ Instant notifications when DV officially opens
-✅ Guidance on what information and photo requirements you need to prepare
-✅ Updates whenever new information is released
+✅ you can register as an agent to work with us.
+👉click or send /agent to register
 
-⚠️ We do not charge any payment at this time.
-
-🎯 Once DV officially opens, you will receive an alert — and then you can submit your information through this bot to complete your registration.
+🎯 Once DV officially opens, you will receive an alert — and then you can submit your information through this bot and our website to complete your registration.
 
 📢 Join our Telegram group to receive news and updates quickly:
 👉 https://t.me/dvlotteryethiopia2027""",
@@ -39,14 +36,11 @@ Until then, here’s what we provide:
 • Helps you submit DV Lottery applications
 • Lets registered agents apply for clients
 • Sends confirmation numbers when applications are completed
-• Provides an admin panel for bot owners
 
 📌 Commands
 • /start — Begin using the bot
 • /apply — Start a new DV application
 • /agent — Register as an agent
-• /admin — Open the admin panel
-• /status — Check your application status
 • /help — Show this help menu
 
 📞 Support
@@ -94,35 +88,27 @@ Thank you for choosing us! 🙏""",
     'amh' : {
         'start' : """👋 እንኳን ወደ DV ሎተሪ የመመዝገቢያ ቦታ በደህና መጡ!
 
-⚠️ በአሁኑ ጊዜ የአሜሪካ DV ሎተሪ አልተከፈተም። 
-እስከዚያው የምናደርጋችው ነገሮች፦
+⚠️ በአሁኑ ጊዜ የአሜሪካ DV ሎተሪ አልተከፈተም።
+እስከዚያው ድረስ የምትችሉት ነገሮች፦
 
-✅  DV በይፋ ሲከፈት በፍጥነት እንዲያመልክቱ ማሳወቂያ መላክ  
-✅ ምን አይነት መረጃ እና ፎቶ ማዘጋጀት እንደሚያስፈልግ መመሪያ መስጠት  
-✅ አዳዲስ መረጃዎች ሲወጡ ማሳወቅ
+✅ ከእኛ ጋር ለመስራት እንደ ኤጀንት መመዝገብ ትችላላችሁ።
+👉 /agent በመላክ ወይም በመጫን ይመዝገቡ
 
-⚠️ በአሁን ሰአት ምንም አይነት ክፍያ አንጠይቅም።
+🎯 DV በይፋ እንደተከፈተ የማሳወቂያ መልእክት ይደርሶታል፤ ከዚያም በዚህ ቦት እና በድረ-ገጻችን መረጃዎን በመላክ መመዝገብ ትችላላችሁ።
 
-🎯 DV በይፋ እንደተከፈተ የማሳወቂያ መልክት ይደርሶታል፤ ከዚያም በቦታችን መረጃዎን በመላክ መመዝገብ ይችላሉ።
-
-📢 ማንኛውንም ዜና እና መረጃ በፍጥነት እንዲደርሶ ግሩፓችህንን ይቀላቀሉ።
-👉 https://t.me/dvlotteryethiopia2027
-
-🙏 እናመሰግናለን""",
+📢 ዜናና ማሳወቂያዎች በፍጥነት እንዲደርሱዎት የቴሌግራም ግሩፓችንን ይቀላቀሉ፦
+👉 https://t.me/dvlotteryethiopia2027""",
         'help' : """✨ DV Lottery አገልጋይ ቦት — የእርዳታ ሜኑ
 
 🤖 ቦቱ የሚያደርገው
 • የDV ሎተሪ መስጫ ሂደትን ይረዳዎታል
 • የተመዘገቡ ወኪሎች ለደንበኞቻቸው ማመልከት ይችላሉ
 • መመርያዎች ከተጠናቀቁ በኋላ የማረጋገጫ ቁጥሮችን ይልካል
-• ለቦት ባለቤቶች የአስተዳደር ፓነል ይሰጣል
 
 📌 ትእዛዞች
 • /start — ቦቱን ጀምር
 • /apply — አዲስ የDV መዝገብ ጀምር
 • /agent — እንደ ወኪል ተመዝገብ
-• /admin — የአስተዳደር ፓነል ክፈት
-• /status — የመመርያ ሁኔታህን ተመልከት
 • /help — ይህን የእርዳታ ሜኑ አሳይ
 
 📞 ድጋፍ
@@ -137,17 +123,14 @@ Thank you for choosing us! 🙏""",
         'start' : """👋 Baga nagaan gara Botii Galmeessa DV Lottery dhuftan!
 
 ⚠️ Amma yeroo kanatti DV Lottery Ameerikaa hin banne.
-Yeroo eeggannoo kana keessatti tajaajiloota armaan gadii ni kenna:
+Hanga sanitti wantoota armaan gadii gochuu dandeessu:
 
-✅ DV yommuu banu siif saffisaan beeksisa ni erga
-✅ Odeeffannoo fi suuraa barbaachisu akkamitti akka qophaaftu gorsa ni kenna
-✅ Odeeffannoo haaraan yoo bahe hunda siif ni beeksisa
+✅ Nuti waliin hojjechuuf akka agentii galmaa’uu dandeessu.
+👉 /agent cuqaasi ykn ergiitii galmaa’i
 
-⚠️ Yeroo ammaa kana kaffaltii homaa hin gaafannu.
+🎯 DV yommuu banu siif beeksisni ni dhufa; sana booda odeeffannoo kee bot kana fi marsariitii keenya fayyadamuun galmeessuu ni dandeessa.
 
-🎯 DV yommuu banu siif ni beeksifama; san booda odeeffannoo kee bot kanaan galchitee galmee kee xumuru ni dandeessa.
-
-📢 Oduu fi odeeffannoo haaraa saffisaan akka siif gahu, garee Telegram keenyaa seeni:
+📢 Oduu fi beeksisa haaraa saffisaan akka siif gahuuf garee Telegram keenyaa seeni:
 👉 https://t.me/dvlotteryethiopia2027""",
         'help' : """✨ DV Lottery Gargaarsa Botii — Galmee Gargaarsaa
 
@@ -155,14 +138,11 @@ Yeroo eeggannoo kana keessatti tajaajiloota armaan gadii ni kenna:
 • Deeggarsa galmee DV Lottery siif kenna
 • Ejansoonni galmaa’an maamiltootaaf ni dhiyeessu
 • Galmeen fixxiin booda lakkoofsa mirkaneessaa ni erga
-• Abbootii botii fi hoggantootaaf paanelii admin ni qaba
 
 📌 Ajajawwan
 • /start — Botii eegali
 • /apply — Galmee DV haaraa jalqabi
 • /agent — Akkuma ejansaatti of galmeessi
-• /admin — Paanelii admin banu
-• /status — Haala galmee kee ilaali
 • /help — Galmee gargaarsaa kana agarsiisi
 
 📞 Deeggarsa
@@ -173,24 +153,6 @@ Deeggarsa barbaaddaa? Garee deeggarsa keenya qunnamaa:
     }
 }
 
-
-
-
-start = """👋 Welcome to DV Lottery Application Assistant!
-
-This bot helps you apply for the 🇺🇸 DV Lottery (Green Card Lottery) through me — your trusted agent.
-
-Here’s how it works:
-1️⃣ You answer simple questions here.  
-2️⃣ You send your correct photo.  
-3️⃣ You pay the small service fee.  
-4️⃣ I will personally apply for you on the official DV Lottery website and send you your confirmation details.
-
-⚠️ Note:
-This is *not* an official U.S. Government bot. I only help you prepare and submit your application correctly.
-
-Ready to begin? Tap below 👇
-"""
 cancel = """❌ Action cancelled.
 
 You’ve stopped the current process. Use the menu to continue whenever you’re ready."""
@@ -202,6 +164,12 @@ Please start again if you want to continue"""
 admin_panel = {'choice' : ReplyKeyboardMarkup(
                     [["🔔Broadcast Message"],
                      ["📊Statistics Dashboard"]],
+                    resize_keyboard=True,
+                    one_time_keyboard=True,
+                ),
+                'message_to' : ReplyKeyboardMarkup(
+                    [["Agent", "Regular"],
+                     ["All_bot_users"]],
                     resize_keyboard=True,
                     one_time_keyboard=True,
                 ),

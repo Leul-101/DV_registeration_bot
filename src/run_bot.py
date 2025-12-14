@@ -4,21 +4,26 @@ from telegram.ext import (Application,
                           filters)
 from app.utils import config
 from app.handlers import command_h, query_h, conversation_h
-import threading
 
 logger = config.setup_logger(__name__)
 TOKEN = config.BOT_TOKEN
-
+WEBHOOK_URL = None
 def main():
     app = Application.builder().token(TOKEN).build()
     app.add_handler(command_h.start_c)
-    app.add_handler(command_h.help_c)
+    #app.add_handler(command_h.help_c)
     app.add_handler(command_h.lang_c)
     app.add_handler(query_h.button_h)
-    app.add_handler(conversation_h.conv_h_for_form)
+    #app.add_handler(conversation_h.conv_h_for_form)
     app.add_handler(conversation_h.conv_h_for_admin)
     app.add_handler(conversation_h.conv_h_for_agent)
     logger.info('starting...')
+    # app.run_webhook(
+    # listen="127.0.0.1",    # Listen only locally! Nginx talks to us here.
+    # port=5000,             # Must match the port in your Nginx config
+    # url_path="YOUR_TOKEN",
+    # webhook_url="https://example.com/YOUR_TOKEN" # The public URL Telegram sees
+    # )
     app.run_polling()
     logger.info('Program stoped!')
 

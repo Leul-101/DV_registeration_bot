@@ -13,6 +13,7 @@ from telegram.ext import (ConversationHandler,
 import asyncio
 import uuid
 import json
+import time
 
 logger = config.setup_logger(__name__)
 
@@ -285,9 +286,12 @@ async def referral_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def admin_service(update: Update, context: ContextTypes.DEFAULT_TYPE):
      if update.message.text == "🔔Broadcast Message":
           try:
-               await update.message.reply_text("Comming soon...😁I'm working on it",
-                                               reply_markup=ReplyKeyboardRemove())
-               return ConversationHandler.END
+               text = """Please choose who you want to send this message to 👇
+
+🎯 Select one of the options below to continue."""
+               await update.message.reply_text(text=text,
+                                               reply_markup=tandm.admin_panel['message_to'])
+               return ADMIN_PAGES[2]
           except Exception as e:
                logger.error(e)
      elif update.message.text == "📊Statistics Dashboard":
@@ -307,6 +311,63 @@ async def admin_service(update: Update, context: ContextTypes.DEFAULT_TYPE):
                return ConversationHandler.END
           except Exception as e:
                logger.error(e)
+     return ConversationHandler.END
+async def admin_broadcast_to(update: Update, context: ContextTypes.DEFAULT_TYPE):
+     broadcast_to = update.message.text
+     context.user_data['broadcast_to'] = broadcast_to
+     try:
+          await update.message.reply_text("""Please type the message you want to send.
+
+📌 This message will be delivered to the selected users.
+When ready, just send the text below 👇""", reply_markup=ReplyKeyboardRemove())
+          return ADMIN_PAGES[3]
+          
+     except Exception as e:
+          logger.error(f"filed to send message to admin: {e}")
+          return ConversationHandler.END
+async def admin_broadcast_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+          message = update.message.text
+          DataBase.start()
+          all_users = DataBase.retun_users()
+          DataBase.end()
+
+          if all_users:
+               index = 0
+               if context.user_data['broadcast_to'] in ['Agent', 'Regular']:
+                    for i in all_users:
+                         if i[4] == context.user_data['broadcast_to']:
+                              try:
+                                   await context.bot.send_message(chat_id=i[1], text=message)
+                                   index += 1
+                              except Exception as e:
+                                   logger.error(f"failed to broadcast message to {i[1]}: {e}")
+                              
+                              if index % 20 == 0:
+                                   time.sleep(1)
+                    try:
+                         await update.message.reply_text(f"✅ Message sent to {index} {context.user_data['broadcast_to']}s.")
+                    except Exception as e:
+                         logger.error(e)
+               elif context.user_data['broadcast_to'] == 'All_bot_users':
+                    for i in all_users:
+                         try:
+                              await context.bot.send_message(chat_id=i[1], text=message)
+                              index += 1
+                         except Exception as e:
+                              logger.error(f"failed to broadcast message to {i[1]}: {e}")
+                         if index % 20 == 0:
+                                   time.sleep(1)
+                    try:
+                         await update.message.reply_text(f"✅ Message sent to {index} {context.user_data['broadcast_to']}s.")
+                    except Exception as e:
+                         logger.error(e)
+               else:
+                    try:
+                         await update.message.reply_text("Soory, i can't find the  people you are looking for!")
+                    except Exception as e:
+                         logger.error(e)
+          return ConversationHandler.END
+
 ###AGENT###
 AGENT_FORM = range(3)
 async def agent_entery(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -433,8 +494,10 @@ conv_h_for_form = ConversationHandler(
 conv_h_for_admin = ConversationHandler(
      entry_points= [CommandHandler('admin', admin_entery)],
      states = {
-          FORM_PAGES[0] : [MessageHandler(filters.TEXT & ~filters.COMMAND, referral_check)],
-          FORM_PAGES[1] : [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_service)],
+          ADMIN_PAGES[0] : [MessageHandler(filters.TEXT & ~filters.COMMAND, referral_check)],
+          ADMIN_PAGES[1] : [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_service)],
+          ADMIN_PAGES[2] : [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_broadcast_to)],
+          ADMIN_PAGES[3] : [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_broadcast_message)],
           ConversationHandler.TIMEOUT: [MessageHandler(filters.ALL & ~filters.COMMAND, timeout)]
      },
      conversation_timeout=1800,
